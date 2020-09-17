@@ -95,6 +95,10 @@ int main () {
     std::cout << angle (r0, r2)
         << std::endl;
 
+    PRINTVECT (r0);
+    r0 = 2 * r0;
+    PRINTVECT (r0);
+
     return 0;
 }
 
