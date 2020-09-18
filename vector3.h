@@ -1,6 +1,7 @@
 #ifndef VECTOR3_H_
 #define VECTOR3_H_
 
+#include <iostream>
 
 namespace AltMath {
     class vector3 {
@@ -8,12 +9,15 @@ namespace AltMath {
             double x;
             double y;
             double z;
+            static long globId;
 
         public:
+            const long id;
+
             vector3 (double = .0, double = .0, double = .0);
             vector3 (const vector3 &vec);
             ~vector3 ();
-
+            
             double getx () const;
             double gety () const;
             double getz () const;
@@ -58,6 +62,10 @@ namespace AltMath {
 
             // Скалярное произведение двух векторов
             friend double operator& (const vector3 &vecA, const vector3 &vecB);
+
+            
+            // Перегрузка оператора стейтмента вывода
+            friend std::ostream &operator<< (std::ostream &out, const vector3 &vec);   
     };
 
     // Косинус угла между двумя векторами

@@ -1,22 +1,32 @@
+#ifndef VECTOR3_CPP_
+#define VECTOR3_CPP_
+
 #include "vector3.h"
 #include <iostream>
 #include <cmath>
 
 
 namespace AltMath {
+    long vector3::globId = 0;
+
     vector3::vector3 (double x, double y, double z)
-        : x(x), y(y), z(z) {
-        std::cout << this << " Constructor " << std::endl;
+        : x(x), y(y), z(z), id(globId) {
+        globId++;
+        std::cout << "Constructor    id_" << id << " " 
+            << *this << std::endl;
     }
 
     vector3::vector3 (const vector3 &vec) 
-        : x(vec.x), y(vec.y), z(vec.z) {
-        std::cout << this << " Copied      " << std::endl;
+        : x(vec.x), y(vec.y), z(vec.z), id(globId) {
+        globId++;
+        std::cout << "Copied id_" << vec.id << " to id_" << id << " " 
+            << *this << std::endl;
     }
 
     vector3::~vector3 () {
-        std::cout << this << " Destructor  " << std::endl; 
+        std::cout << "Destructor     id_" << id << std::endl; 
     }
+
 
     double vector3::getx () const {
         return x;
@@ -89,9 +99,9 @@ namespace AltMath {
 
     // Унарный '-'
     vector3 &vector3::operator- () {
-        x = -x;
-        y = -y;
-        x = -z;
+        x *= -1;
+        y *= -1;
+        z *= -1;
         return *this;
     }
 
@@ -157,9 +167,9 @@ namespace AltMath {
     }
 
     vector3 &vector3::operator*= (const vector3 &vec) {
-        x = y * vec.z - vec.z * y;
-        y = z * vec.x - vec.x * z;
-        z = x * vec.y - vec.y * x;
+        x = y * vec.z - z * vec.y;
+        y = z * vec.x - x * vec.z;
+        z = x * vec.y - y * vec.x;
         return *this;
     }
 
@@ -170,20 +180,28 @@ namespace AltMath {
     }
 
 
+    // Перегрузка оператора стейтмента вывода
+    std::ostream &operator<< (std::ostream &stream, const vector3 &vec) {
+        stream << "(" << vec.x << ", " << vec.y << ", " << vec.z << ")";
+        return stream;
+    }
+
+
 
     // Косинус угла между двумя векторами
-    double cos (vector3 vecA, const vector3 vecB) {
+    double cos (const vector3 &vecA, const vector3 &vecB) {
         return (vecA & vecB) / (vecA.abs () * vecB.abs ());
     }
 
     // Синус угла между двумя векторами
-    double sin (const vector3 vecA, const vector3 vecB) {
+    double sin (const vector3 &vecA, const vector3 &vecB) {
         return (vecA * vecB).abs () / (vecA.abs () * vecB.abs ());
     }
 
     // Величина угла в градусах между векторами в пределах [-180, 180]
-    double angle (const vector3 vecA, const vector3 vecB) {
-        return (atan2 ((vecA * vecB).abs (), vecA & vecB) * 180 / acos (-1));
+    double angle (const vector3 &vecA, const vector3 &vecB) {
+        return (atan2 ((vecA * vecB).abs (), vecA & vecB) * 180 / M_PI);
     }
 }
 
+#endif /* VECTOR3_CPP_ */
